@@ -1,0 +1,29 @@
+# Local overrides on top of upstream langfuse docker-compose.yml (v4.68.0).
+# Only web (3100) and minio (9190) are published, both on 127.0.0.1;
+# internal services have no host ports so nothing collides with other stacks.
+name: langfuse
+
+services:
+  langfuse-worker:
+    image: docker.langfuse.com/langfuse/langfuse-worker:4.68.0
+    ports: !reset []
+
+  langfuse-web:
+    image: docker.langfuse.com/langfuse/langfuse:4.68.0
+    ports: !override
+      - 127.0.0.1:3100:3000
+    environment:
+      LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT: http://localhost:9190
+
+  minio:
+    ports: !override
+      - 127.0.0.1:9190:9000
+
+  clickhouse:
+    ports: !reset []
+
+  redis:
+    ports: !reset []
+
+  postgres:
+    ports: !reset []
